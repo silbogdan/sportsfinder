@@ -44,4 +44,12 @@ public class Location {
     public void setCounty(County county) {
         this.county = county;
     }
+
+    public Long getLocationId() {
+        return this.locationId;
+    }
+
+    public List<Sport> getSports() {
+        return sports;
+    }
 }

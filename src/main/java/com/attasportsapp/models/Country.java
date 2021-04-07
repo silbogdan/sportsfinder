@@ -16,9 +16,8 @@ public class Country {
     @JsonManagedReference
     List<County> counties;
 
-    public Country(String name, List<County> counties) {
+    public Country(String name) {
         this.name = name;
-        this.counties = counties;
     }
 
     public Country() {
@@ -38,5 +37,9 @@ public class Country {
 
     public void setCounties(List<County> counties) {
         this.counties = counties;
+    }
+
+    public Long getCountryId() {
+        return this.countryId;
     }
 }

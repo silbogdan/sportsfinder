@@ -22,10 +22,9 @@ public class County {
     @JsonManagedReference
     private List<Location> locations;
 
-    public County(String name, Country country, List<Location> locations) {
+    public County(String name, Country country) {
         this.name = name;
         this.country = country;
-        this.locations = locations;
     }
 
     public County() {
@@ -53,5 +52,9 @@ public class County {
 
     public void setLocations(List<Location> locations) {
         this.locations = locations;
+    }
+
+    public Long getCountyId() {
+        return this.countyId;
     }
 }
