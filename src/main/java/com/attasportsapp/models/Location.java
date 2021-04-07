@@ -1,8 +1,10 @@
 package com.attasportsapp.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Location {
@@ -19,6 +21,10 @@ public class Location {
         this.name = name;
         this.county = county;
     }
+
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Sport> sports;
 
     public Location() {
     }
