@@ -11,6 +11,6 @@ import java.util.List;
 
 public interface SportRepository extends JpaRepository<Sport, Long> {
 
-    @Query(value = "from Sport s where s.startDate BETWEEN :startDate AND :endDate")
-    List<Sport> findAllBetweenDates(@Param("startDate") LocalDate startDate, @Param("endDate")LocalDate endDate, Sort sort);
+    @Query(value = "from Sport s where s.name IN (:sportsNames) AND s.startDate BETWEEN :startDate AND :endDate")
+    List<Sport> findAllBetweenDates(@Param("sportsNames") List<String> sportsNames, @Param("startDate") LocalDate startDate, @Param("endDate")LocalDate endDate, Sort sort);
 }
