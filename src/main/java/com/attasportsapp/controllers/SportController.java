@@ -4,6 +4,7 @@ import com.attasportsapp.models.County;
 import com.attasportsapp.models.Sport;
 import com.attasportsapp.repositories.LocationRepository;
 import com.attasportsapp.repositories.SportRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
@@ -23,8 +24,13 @@ public class SportController {
     }
 
     @GetMapping("/{sportId}")
-    public Sport getSport(@PathVariable Long sportId) {
-        return sportRepository.findById(sportId).orElseThrow();
+    public ResponseEntity<Sport> getSport(@PathVariable Long sportId) {
+        try {
+            Sport sport = sportRepository.findById(sportId).orElseThrow(NullPointerException::new);
+            return ResponseEntity.ok(sport);
+        } catch (NullPointerException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("")
@@ -56,7 +62,8 @@ public class SportController {
     }
 
     @DeleteMapping("/{sportId}")
-    public void deleteSport(@PathVariable Long sportId) {
+    public ResponseEntity<?> deleteSport(@PathVariable Long sportId) {
         sportRepository.deleteById(sportId);
+        return ResponseEntity.noContent().build();
     }
 }

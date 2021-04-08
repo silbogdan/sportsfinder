@@ -17,6 +17,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 
+import java.util.Objects;
+
 @SpringBootApplication
 @EntityScan
 public class AttasportsappApplication {
@@ -37,9 +39,9 @@ public class AttasportsappApplication {
             Location location = new Location("Cheile Turzii", county);
             location = locationRepository.save(location);
 
-            countryController.getCountryJPQL(country.getCountryId()).getCounties().forEach(c -> System.out.println(c.getName()));
-            countyController.getCountyJPQL(county.getCountyId()).getLocations().forEach(l -> System.out.println(l.getName()));
-            if ((location = locationController.getLocationJPQL(location.getLocationId())) != null) { // Checking NoResultException handler
+            Objects.requireNonNull(countryController.getCountryJPQL(country.getCountryId()).getBody()).getCounties().forEach(c -> System.out.println(c.getName()));
+            Objects.requireNonNull(countyController.getCountyJPQL(county.getCountyId()).getBody()).getLocations().forEach(l -> System.out.println(l.getName()));
+            if ((location = locationController.getLocationJPQL(location.getLocationId()).getBody()) != null) {
                 System.out.println("Reached here");
                 location.getSports().forEach(s -> System.out.println(s.getName()));
             }

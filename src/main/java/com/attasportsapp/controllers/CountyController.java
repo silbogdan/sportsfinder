@@ -4,6 +4,7 @@ import com.attasportsapp.models.Country;
 import com.attasportsapp.models.County;
 import com.attasportsapp.repositories.CountryRepository;
 import com.attasportsapp.repositories.CountyRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
@@ -24,22 +25,28 @@ public class CountyController {
     }
 
     @GetMapping("/jpql/{countyId}")
-    public County getCountyJPQL(@PathVariable Long countyId) { //TODO: Make proper HTTP Response
+    public ResponseEntity<County> getCountyJPQL(@PathVariable Long countyId) {
         try {
-            return entityManager.createQuery(
+            County county = entityManager.createQuery(
                     "SELECT ct FROM County AS ct " +
                             "JOIN FETCH ct.locations " +
                             "WHERE ct.countyId = :id", County.class
             ).setParameter("id", countyId).getSingleResult();
+            return ResponseEntity.ok(county);
         } catch (NoResultException e) {
             System.out.println("NoResultException: County " + countyId + " has an empy list of locations!");
-            return null;
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/{countyId}")
-    public County getCounty(@PathVariable Long countyId) {
-        return countyRepository.findById(countyId).orElseThrow();
+    public ResponseEntity<County> getCounty(@PathVariable Long countyId) {
+        try {
+            County county = countyRepository.findById(countyId).orElseThrow(NullPointerException::new);
+            return ResponseEntity.ok(county);
+        } catch (NullPointerException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("")
@@ -68,7 +75,8 @@ public class CountyController {
     }
 
     @DeleteMapping("/{countyId}")
-    public void deleteCountry(@PathVariable Long countyId) {
+    public ResponseEntity<?> deleteCountry(@PathVariable Long countyId) {
         countyRepository.deleteById(countyId);
+        return ResponseEntity.noContent().build();
     }
 }

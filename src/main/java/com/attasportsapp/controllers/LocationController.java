@@ -3,6 +3,7 @@ package com.attasportsapp.controllers;
 import com.attasportsapp.models.Location;
 import com.attasportsapp.repositories.CountyRepository;
 import com.attasportsapp.repositories.LocationRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
@@ -23,22 +24,28 @@ public class LocationController {
     }
 
     @GetMapping("/jpql/{locationId}")
-    public Location getLocationJPQL(@PathVariable Long locationId) { //TODO: Make proper HTTP Response
+    public ResponseEntity<Location> getLocationJPQL(@PathVariable Long locationId) {
         try {
-            return entityManager.createQuery(
+            Location location = entityManager.createQuery(
                     "SELECT loc FROM Location AS loc " +
                             "JOIN FETCH loc.sports " +
                             "WHERE loc.locationId = :id", Location.class
             ).setParameter("id", locationId).getSingleResult();
+            return ResponseEntity.ok(location);
         } catch (NoResultException e) {
             System.out.println("NoResultException: Location " + locationId + " has an empty list of sports!");
-            return null;
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/{locationId}")
-    public Location getLocation(@PathVariable Long locationId) {
-        return locationRepository.findById(locationId).orElseThrow();
+    public ResponseEntity<Location> getLocation(@PathVariable Long locationId) {
+        try {
+            Location location = locationRepository.findById(locationId).orElseThrow(NullPointerException::new);
+            return ResponseEntity.ok(location);
+        } catch (NullPointerException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("")
@@ -67,8 +74,9 @@ public class LocationController {
     }
 
     @DeleteMapping("/{locationId}")
-    public void deleteCountry(@PathVariable Long locationId) {
+    public ResponseEntity<?> deleteCountry(@PathVariable Long locationId) {
         locationRepository.deleteById(locationId);
+        return ResponseEntity.noContent().build();
     }
 
 }

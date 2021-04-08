@@ -2,6 +2,7 @@ package com.attasportsapp.controllers;
 
 import com.attasportsapp.models.Country;
 import com.attasportsapp.repositories.CountryRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
@@ -20,22 +21,28 @@ public class CountryController {
     }
 
     @GetMapping("/jpql/{countryId}")
-    public Country getCountryJPQL(@PathVariable Long countryId) { //TODO: Make proper HTTP Response
+    public ResponseEntity<Country> getCountryJPQL(@PathVariable Long countryId) {
         try {
-            return entityManager.createQuery(
+            Country country = entityManager.createQuery(
                     "SELECT ctr FROM Country AS ctr " +
                             "JOIN FETCH ctr.counties " +
                             "WHERE ctr.countryId = :id", Country.class
             ).setParameter("id", countryId).getSingleResult();
+            return ResponseEntity.ok(country);
         } catch (NoResultException e) {
             System.out.println("NoResultException: Country " + countryId + " has an empty list of counties!");
-            return null;
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/{countryId}")
-    public Country getCountry(@PathVariable Long countryId) {
-        return countryRepository.findById(countryId).orElseThrow();
+    public ResponseEntity<Country> getCountry(@PathVariable Long countryId) {
+        try {
+            Country country = countryRepository.findById(countryId).orElseThrow(NullPointerException::new);
+            return ResponseEntity.ok(country);
+        } catch (NullPointerException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("")
@@ -49,19 +56,24 @@ public class CountryController {
     }
 
     @PutMapping("/{countryId}")
-    public Country updateCountry(@RequestBody Country country, @PathVariable Long countryId) {
-        Country updatedCountry = countryRepository.findById(countryId).map(
-                c -> {
-                    c.setName(country.getName());
-                    return c;
-                }
-        ).orElseThrow();
+    public ResponseEntity<Country> updateCountry(@RequestBody Country country, @PathVariable Long countryId) {
 
-        return countryRepository.save(updatedCountry);
+        try {
+            Country updatedCountry = countryRepository.findById(countryId).map(
+                    c -> {
+                        c.setName(country.getName());
+                        return c;
+                    }
+            ).orElseThrow(NullPointerException::new);
+            return ResponseEntity.ok(countryRepository.save(updatedCountry));
+        } catch (NullPointerException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{countryId}")
-    public void deleteCountry(@PathVariable Long countryId) {
+    public ResponseEntity<?> deleteCountry(@PathVariable Long countryId) {
         countryRepository.deleteById(countryId);
+        return ResponseEntity.noContent().build();
     }
 }
