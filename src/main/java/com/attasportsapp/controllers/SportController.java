@@ -1,6 +1,7 @@
 package com.attasportsapp.controllers;
 
 import com.attasportsapp.models.Sport;
+import com.attasportsapp.models.dto.SportDTO;
 import com.attasportsapp.repositories.LocationRepository;
 import com.attasportsapp.repositories.SportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +40,17 @@ public class SportController {
     }
 
     @GetMapping("/sorted")
-    public List<Sport> getOrderedSports( //TODO: Make Sport DTO and add it as RequestBody
+    public List<Sport> getOrderedSports(
+            @RequestBody List<SportDTO> sportsDTO,
             @RequestParam(defaultValue = "cost") String sortBy,
             @RequestParam(defaultValue = "01-01-1900") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
             @RequestParam(defaultValue = "01-01-2100") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate) {
 
-        return service.getOrderedSports(startDate, endDate, sortBy);
+//        List<Sport> sports = sportsDTO.stream().map(
+//                sportDTO -> mapper.map(sportDTO, Sport.class)
+//        ).collect(Collectors.toList());
+
+        return service.getOrderedSports(sportsDTO, startDate, endDate, sortBy);
     }
 
     @PostMapping(value = {"/{locationId}", ""})
