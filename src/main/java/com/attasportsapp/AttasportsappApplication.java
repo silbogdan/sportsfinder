@@ -11,6 +11,7 @@ import com.attasportsapp.repositories.CountryRepository;
 import com.attasportsapp.repositories.CountyRepository;
 import com.attasportsapp.repositories.LocationRepository;
 import com.attasportsapp.repositories.SportRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,6 +23,11 @@ import java.util.Objects;
 @SpringBootApplication
 @EntityScan
 public class AttasportsappApplication {
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(AttasportsappApplication.class, args);
