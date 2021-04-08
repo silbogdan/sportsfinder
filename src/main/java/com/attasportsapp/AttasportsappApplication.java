@@ -6,7 +6,6 @@ import com.attasportsapp.controllers.LocationController;
 import com.attasportsapp.models.Country;
 import com.attasportsapp.models.County;
 import com.attasportsapp.models.Location;
-import com.attasportsapp.models.Sport;
 import com.attasportsapp.repositories.CountryRepository;
 import com.attasportsapp.repositories.CountyRepository;
 import com.attasportsapp.repositories.LocationRepository;

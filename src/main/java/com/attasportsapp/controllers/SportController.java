@@ -1,6 +1,7 @@
 package com.attasportsapp.controllers;
 
 import com.attasportsapp.models.Sport;
+import com.attasportsapp.models.dto.LocationsDTO;
 import com.attasportsapp.models.dto.SportDTO;
 import com.attasportsapp.repositories.LocationRepository;
 import com.attasportsapp.repositories.SportRepository;
@@ -46,7 +47,7 @@ public class SportController {
     }
 
     @GetMapping("/sorted")
-    public List<Sport> getOrderedSports(
+    public List<LocationsDTO> getOrderedSports(
             @RequestBody List<SportDTO> sportsDTO,
             @RequestParam(defaultValue = "cost") String sortBy,
             @RequestParam(defaultValue = "01-01-1900") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
@@ -56,7 +57,7 @@ public class SportController {
 //                sportDTO -> mapper.map(sportDTO, Sport.class)
 //        ).collect(Collectors.toList());
 
-        return service.getOrderedSports(sportsDTO, startDate, endDate, sortBy);
+        return service.getOrderedSportsInLocations(sportsDTO, startDate, endDate, sortBy);
     }
 
     @PostMapping(value = {"/{locationId}", ""})

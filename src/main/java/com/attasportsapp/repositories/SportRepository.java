@@ -1,5 +1,6 @@
 package com.attasportsapp.repositories;
 
+import com.attasportsapp.models.Location;
 import com.attasportsapp.models.Sport;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +14,7 @@ public interface SportRepository extends JpaRepository<Sport, Long> {
 
     @Query(value = "from Sport s where s.name IN (:sportsNames) AND s.startDate BETWEEN :startDate AND :endDate")
     List<Sport> findAllBetweenDates(@Param("sportsNames") List<String> sportsNames, @Param("startDate") LocalDate startDate, @Param("endDate")LocalDate endDate, Sort sort);
+
+    @Query(value = "from Sport s where s.location = :location AND s.name IN (:sportsNames) AND s.startDate BETWEEN :startDate AND :endDate")
+    List<Sport> findAllBetweenDatesInLocation(@Param("location") Location location, @Param("sportsNames") List<String> sportsNames, @Param("startDate") LocalDate startDate, @Param("endDate")LocalDate endDate, Sort sort);
 }
