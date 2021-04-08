@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 public class Sport {
@@ -13,18 +14,20 @@ public class Sport {
     private String name;
     private Double cost;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    private java.sql.Date startDate;
 
     @JsonFormat(pattern = "dd-MM-yyyy")
-    private java.sql.Date endDate;
+    private LocalDate startDate;
+
+
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDate endDate;
 
     @ManyToOne
     @JoinColumn(name = "location_id")
     @JsonBackReference
     private Location location;
 
-    public Sport(String name, Double cost, Date startDate, Date endDate, Location location) {
+    public Sport(String name, Double cost, LocalDate startDate, LocalDate endDate, Location location) {
         this.name = name;
         this.cost = cost;
         this.startDate = startDate;
@@ -51,19 +54,19 @@ public class Sport {
         this.cost = cost;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
