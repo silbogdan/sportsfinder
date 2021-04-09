@@ -44,12 +44,12 @@ public class AttasportsappApplication {
             Location location = new Location("Cheile Turzii", county);
             location = locationRepository.save(location);
 
-            Objects.requireNonNull(countryController.getCountryJPQL(country.getCountryId()).getBody()).getCounties().forEach(c -> System.out.println(c.getName()));
-            Objects.requireNonNull(countyController.getCountyJPQL(county.getCountyId()).getBody()).getLocations().forEach(l -> System.out.println(l.getName()));
-            if ((location = locationController.getLocationJPQL(location.getLocationId()).getBody()) != null) {
-                System.out.println("Reached here");
-                location.getSports().forEach(s -> System.out.println(s.getName()));
-            }
+//            Objects.requireNonNull(countryController.getCountryJPQL(country.getCountryId()).getBody()).getCounties().forEach(c -> System.out.println(c.getName()));
+//            Objects.requireNonNull(countyController.getCountyJPQL(county.getCountyId()).getBody()).getLocations().forEach(l -> System.out.println(l.getName()));
+//            if ((location = locationController.getLocationJPQL(location.getLocationId()).getBody()) != null) {
+//                System.out.println("Reached here");
+//                location.getSports().forEach(s -> System.out.println(s.getName()));
+//            }
         };
     }
 }
