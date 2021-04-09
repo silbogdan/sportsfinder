@@ -4,6 +4,7 @@ import com.attasportsapp.models.Country;
 import com.attasportsapp.models.County;
 import com.attasportsapp.repositories.CountryRepository;
 import com.attasportsapp.repositories.CountyRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,28 +51,31 @@ public class CountyController {
     }
 
     @GetMapping("")
-    public List<County> getCountries() {
-        return countyRepository.findAll();
+    public ResponseEntity<List<County>> getCountries() {
+        return ResponseEntity.ok(countyRepository.findAll());
     }
 
     @PostMapping("/{countryId}")
-    public County addCountry(@RequestBody County county, @PathVariable(required = false) Long countryId) {
+    public ResponseEntity<County> addCountry(@RequestBody County county, @PathVariable(required = false) Long countryId) {
         if (countryId != null)
             county.setCountry(countryRepository.findById(countryId).orElseThrow());
 
-        return countyRepository.save(county);
+        return new ResponseEntity<>(countyRepository.save(county), HttpStatus.CREATED);
     }
 
     @PutMapping("/{countyId}")
-    public County updateCountry(@RequestBody County county, @PathVariable Long countyId) {
-        County updatedCounty = countyRepository.findById(countyId).map(
-                c -> {
-                    c.setName(county.getName());
-                    return c;
-                }
-        ).orElseThrow();
-
-        return countyRepository.save(updatedCounty);
+    public ResponseEntity<County> updateCountry(@RequestBody County county, @PathVariable Long countyId) {
+        try {
+            County updatedCounty = countyRepository.findById(countyId).map(
+                    c -> {
+                        c.setName(county.getName());
+                        return c;
+                    }
+            ).orElseThrow(NullPointerException::new);
+            return new ResponseEntity<>(countyRepository.save(updatedCounty), HttpStatus.CREATED);
+        } catch (NullPointerException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{countyId}")

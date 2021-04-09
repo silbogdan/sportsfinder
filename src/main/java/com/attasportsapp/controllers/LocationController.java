@@ -7,6 +7,7 @@ import com.attasportsapp.repositories.LocationRepository;
 import com.attasportsapp.services.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,36 +58,39 @@ public class LocationController {
     }
 
     @GetMapping("")
-    public List<Location> getCountries() {
-        return locationRepository.findAll();
+    public ResponseEntity<List<Location>> getCountries() {
+        return ResponseEntity.ok(locationRepository.findAll());
     }
 
     @GetMapping("/sorted")
-    public List<Location> getOrderedSportsInLocations(
+    public ResponseEntity<List<Location>> getOrderedSportsInLocations(
             @RequestBody List<SportDTO> sportsDTO,
             @RequestParam(defaultValue = "01-01-1900") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
             @RequestParam(defaultValue = "01-01-2100") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate) {
-        return service.getOrderedSportsInLocations(sportsDTO, startDate, endDate);
+        return ResponseEntity.ok(service.getOrderedSportsInLocations(sportsDTO, startDate, endDate));
     }
 
     @PostMapping("/{countyId}")
-    public Location addLocation(@RequestBody Location location, @PathVariable(required = false) Long countyId) {
+    public ResponseEntity<Location> addLocation(@RequestBody Location location, @PathVariable(required = false) Long countyId) {
         if (countyId != null)
             location.setCounty(countyRepository.findById(countyId).orElseThrow());
 
-        return locationRepository.save(location);
+        return new ResponseEntity<>(locationRepository.save(location), HttpStatus.CREATED);
     }
 
     @PutMapping("/{locationId}")
-    public Location updateLocation(@RequestBody Location location, @PathVariable Long locationId) {
-        Location updatedLocation = locationRepository.findById(locationId).map(
-                l -> {
-                    l.setName(location.getName());
-                    return l;
-                }
-        ).orElseThrow();
-
-        return locationRepository.save(updatedLocation);
+    public ResponseEntity<Location> updateLocation(@RequestBody Location location, @PathVariable Long locationId) {
+        try {
+            Location updatedLocation = locationRepository.findById(locationId).map(
+                    l -> {
+                        l.setName(location.getName());
+                        return l;
+                    }
+            ).orElseThrow(NullPointerException::new);
+            return new ResponseEntity<>(locationRepository.save(updatedLocation), HttpStatus.CREATED);
+        } catch (NullPointerException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{locationId}")

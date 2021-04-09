@@ -2,6 +2,7 @@ package com.attasportsapp.controllers;
 
 import com.attasportsapp.models.Country;
 import com.attasportsapp.repositories.CountryRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,13 +47,13 @@ public class CountryController {
     }
 
     @GetMapping("")
-    public List<Country> getCountries() {
-        return countryRepository.findAll();
+    public ResponseEntity<List<Country>> getCountries() {
+        return ResponseEntity.ok(countryRepository.findAll());
     }
 
     @PostMapping("")
-    public Country addCountry(@RequestBody Country country) {
-        return countryRepository.save(country);
+    public ResponseEntity<Country> addCountry(@RequestBody Country country) {
+        return new ResponseEntity<>(countryRepository.save(country), HttpStatus.CREATED);
     }
 
     @PutMapping("/{countryId}")
@@ -65,7 +66,7 @@ public class CountryController {
                         return c;
                     }
             ).orElseThrow(NullPointerException::new);
-            return ResponseEntity.ok(countryRepository.save(updatedCountry));
+            return new ResponseEntity<>(countryRepository.save(updatedCountry), HttpStatus.CREATED);
         } catch (NullPointerException e) {
             return ResponseEntity.notFound().build();
         }
