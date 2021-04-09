@@ -49,9 +49,9 @@ public class SportController {
     @GetMapping("/sorted")
     public List<LocationsDTO> getOrderedSports(
             @RequestBody List<SportDTO> sportsDTO,
-            @RequestParam(defaultValue = "cost") String sortBy,
             @RequestParam(defaultValue = "01-01-1900") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
-            @RequestParam(defaultValue = "01-01-2100") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate) {
+            @RequestParam(defaultValue = "01-01-2100") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate,
+            @RequestParam(defaultValue = "cost") String sortBy) {
 
 //        List<Sport> sports = sportsDTO.stream().map(
 //                sportDTO -> mapper.map(sportDTO, Sport.class)
